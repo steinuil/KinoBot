@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Task.fs" />
     <Compile Include="WhenCommand.fs" />
+    <Compile Include="VoteCommand.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

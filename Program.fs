@@ -33,7 +33,8 @@ let mainTask token =
     commandsConf.set_StringPrefix("!")
 
     let commands = discord.UseCommandsNext(commandsConf)
-    commands.RegisterCommands<Commands.WhenCommand>()
+    commands.RegisterCommands<WhenCommand.WhenCommand>()
+    commands.RegisterCommands<VoteCommand.VoteCommand>()
 
     task {
         do! discord.ConnectAsync()

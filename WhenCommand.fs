@@ -1,4 +1,4 @@
-module KinoBot.Commands
+module KinoBot.WhenCommand
 
 
 open System
