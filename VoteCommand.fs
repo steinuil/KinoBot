@@ -39,6 +39,7 @@ let addVoteMovie (movieArgs : string list) =
     | true -> sprintf "Added the movie %s (%s) to the votes" title id
     | false -> "The movie is already in the list you dismal retard"
 
+
 (*
     Usage of the vote command:
     !vote => displays the current vote results

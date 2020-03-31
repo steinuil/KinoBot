@@ -1,11 +1,9 @@
 ﻿module KinoBot.DB
 
-open System
+
 open System.IO
-open System.Text.Json
-open System.Text.Json.Serialization
 open FSharp.Data
-open Microsoft.FSharp
+
 
 [<Literal>]
 let votesFile = "./db/votes.json"
