@@ -12,7 +12,6 @@ open DSharpPlus.CommandsNext.Attributes
 let parseMovieTitles (args : string[]) =
     args
 
-
 let formatMovieVote (emoji : string, title : string) =
     let displayEmoji = emoji.[0]
     sprintf "%s %c" title displayEmoji
