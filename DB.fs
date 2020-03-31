@@ -28,15 +28,8 @@ let loadOrCreateFile (filename : string) =
         [| |]
 
 
-let currentVotes () =
+let currentMoviesForVote () =
     loadOrCreateFile votesFile
-
-
-type NotMovie = {
-    Title : String
-    Id : String
-    Votes : String []
-    }
 
 
 let writeVoteMovies (movies : seq<VotesDB.Movie>) =
@@ -52,12 +45,12 @@ let writeVoteMovies (movies : seq<VotesDB.Movie>) =
     Returns true if the movie is not already present, otherwise false
 *)
 let addVoteMovie (title : string, id : string) =
-    if currentVotes()
+    if currentMoviesForVote()
         |> Seq.exists (fun vote -> vote.Id = id) then
         false
     else
         let vote = VotesDB.Movie(title, id, [| |])
-        writeVoteMovies(vote :: Array.toList(currentVotes()))
+        writeVoteMovies(vote :: Array.toList(currentMoviesForVote()))
         true
 
 
@@ -67,15 +60,15 @@ let addVoteMovie (title : string, id : string) =
     Returns true if the movie is in the list and the user hasn't already voted, otherwise false
 *)
 let voteForMovie (id : string, user : string) =
-    let movie = currentVotes() |> Seq.tryFind (fun v -> v.Id = id)
+    let movie = currentMoviesForVote() |> Seq.tryFind (fun v -> v.Id = id)
     if movie.IsNone || Seq.contains user movie.Value.Votes then
         false
     else
         let newMovie = VotesDB.Movie
                         ( title = movie.Value.Title,
                           id = movie.Value.Id,
-                          votes = Array.append movie.Value.Votes [|user|] )
-        let newMovies = newMovie :: (currentVotes()
+                          votes = Array.append movie.Value.Votes [| user |] )
+        let newMovies = newMovie :: (currentMoviesForVote()
                                         |> Seq.filter (fun m -> m.Id <> id)
                                         |> Seq.toList)
         writeVoteMovies newMovies
