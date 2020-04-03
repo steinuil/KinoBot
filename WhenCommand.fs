@@ -67,6 +67,4 @@ type WhenCommand () =
             |> List.min
         let t = nextMovie - now
 
-        printfn "User %s requested movie time" ctx.User.Username
-
         ctx.RespondAsync("Movie starts in " + formatTimeSpan t) |> Task.unitIgnore

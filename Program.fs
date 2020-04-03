@@ -2,6 +2,7 @@
 
 
 open Argu
+open System
 open System.Threading.Tasks
 open FSharp.Control.Tasks
 open DSharpPlus
@@ -28,6 +29,13 @@ let mainTask token =
     conf.set_LogLevel(LogLevel.Debug)
 
     let discord = new DiscordClient(conf)
+
+    discord.add_MessageCreated(fun msg -> unitTask {
+        printfn "[%s] <%s#%d> %s"
+            (msg.Message.CreationTimestamp.ToString())
+            msg.Author.Username msg.Author.Id
+            msg.Message.Content
+    })
 
     let commandsConf = CommandsNextConfiguration()
     commandsConf.set_StringPrefix("!")
