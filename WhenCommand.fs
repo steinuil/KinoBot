@@ -7,9 +7,32 @@ open DSharpPlus.CommandsNext
 open DSharpPlus.CommandsNext.Attributes
 
 
-let nextSundayMidnight (today : DateTime) =
-    let daysTilSunday = 7 - LanguagePrimitives.EnumToValue today.DayOfWeek
-    today.AddDays(float daysTilSunday)
+type ScheduledTime = {
+    day : DayOfWeek
+    offsetHours : float Option
+}
+
+
+let rootTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")
+
+
+let days = [DayOfWeek.Sunday; DayOfWeek.Saturday]
+
+
+let convertTimeToTimeZone timeZone time =
+    let time = DateTime.SpecifyKind(time, DateTimeKind.Unspecified)
+    TimeZoneInfo.ConvertTimeFromUtc(time, timeZone)
+
+
+let daysTilNextDayOfWeek (dayOfWeek : DayOfWeek) (today : DayOfWeek) =
+    let dayOfWeek = LanguagePrimitives.EnumToValue dayOfWeek
+    let today = LanguagePrimitives.EnumToValue today
+    match (7 - today + dayOfWeek) % 7 with 0 -> 7 | n -> n
+
+
+let nextDayOfWeek day (today : DateTime) =
+    let days = daysTilNextDayOfWeek day today.DayOfWeek
+    today.AddDays(float days)
 
 
 let s n = if n <> 1 then "s" else ""
@@ -36,7 +59,12 @@ let formatTimeSpan (t : TimeSpan) =
 type WhenCommand () =
     [<Command "when">]
     member _.When(ctx : CommandContext) =
-        let sundayMidnight = nextSundayMidnight DateTime.Today
-        let t = sundayMidnight - DateTime.Now
+        let today = DateTime.Today |> convertTimeToTimeZone rootTimeZone
+        let now = DateTime.Now |> convertTimeToTimeZone rootTimeZone
+        let nextMovie =
+            days
+            |> List.map (fun day -> nextDayOfWeek day today)
+            |> List.min
+        let t = nextMovie - now
 
         ctx.RespondAsync("Movie starts in " + formatTimeSpan t) |> Task.unitIgnore
